@@ -24,5 +24,6 @@ class HomeController extends Controller
     public function index()
     {
         return view('home');
+        //https://www.positronx.io/laravel-jwt-authentication-tutorial-user-login-signup-api/
     }
 }
