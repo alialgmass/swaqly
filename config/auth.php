@@ -50,6 +50,11 @@ return [
             'provider' => 'users',
            
         ],
+        'api-trader' => [
+            'driver' => 'jwt',
+            'provider' => 'traders',
+           
+        ],
        
     
     ],
@@ -75,6 +80,10 @@ return [
         'users' => [
             'driver' => 'eloquent',
             'model' => App\Models\User::class,
+        ],
+        'traders' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Trader::class,
         ],
       
         // 'users' => [
