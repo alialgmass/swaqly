@@ -1,20 +1,27 @@
 <?php
 
 namespace App\Http\Controllers\Api\Trader;
+
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ProductRequest;
 use App\Models\Product;
+use App\Traits\GeneralTrait;
 
 class ProductController extends Controller
 {
+    use GeneralTrait;
     public function index()
     {
         //
-        $product = Product::all();
-return response()->json([
-    "products"=>$product
-    
-], 201); 
+        try {
+            //code...
+            $product = Product::all();
+           
+            return  $this-> returnData('products',$product);
+        } catch (\Throwable$th) {
+             return  $this-> returnError(400, $th);
+        }
+
     }
 
     /**
@@ -26,14 +33,16 @@ return response()->json([
     public function store(ProductRequest $request)
     {
         //
-        $product = Product::create(array_merge(
-            $request->all(),
+        try {
+            $product = Product::create(array_merge(
+                $request->all(),
+
+            ));
           
-        ));
-return response()->json([
-    'message' => 'Product successfully aded',
-    
-], 201); 
+            return  $this-> returnSuccessMessage( "Product successfully aded",  "201");
+        } catch (\Throwable$th) {
+             return  $this-> returnError(400, $th);
+        }
 
     }
 
@@ -46,12 +55,14 @@ return response()->json([
     public function show($id)
     {
         //
-        $product=Product::find($id)->get();
-        
-        return response()->json([
-            'product' => $product,
-            
-        ], 201); 
+        try {
+            $product = Product::find($id)->with('category')->get();
+
+            return  $this-> returnData('products',$product);
+        } catch (\Throwable$th) {
+             return  $this-> returnError(400, $th);
+        }
+
     }
 
     /**
@@ -64,16 +75,18 @@ return response()->json([
     public function update(ProductRequest $request, $id)
     {
         //
-        $product=Product::where('id',$id) ->update(array_merge(
-            $request->all()
-          
-        ));
-     
+        try {
+            $product = Product::where('id', $id)->update(array_merge(
+                $request->all()
 
-        return response()->json([
-            'message' => 'Product successfully update',
-            
-        ], 201); 
+            ));
+
+          
+            return  $this-> returnSuccessMessage( "Product successfully update",  "201");
+        } catch (\Throwable$th) {
+             return  $this-> returnError(400, $th);
+        }
+
     }
 
     /**
@@ -84,11 +97,14 @@ return response()->json([
      */
     public function destroy($id)
     {
-        $product=Product::find($id)->delete();
+        try {
+            $product = Product::find($id)->delete();
 
-        return response()->json([
-            'message' => 'Product successfully deleted',
             
-        ], 201); 
+            return  $this-> returnSuccessMessage( "Product successfully deleted",  "201");
+        } catch (\Throwable$th) {
+             return  $this-> returnError(400, $th);
+        }
+
     }
 }

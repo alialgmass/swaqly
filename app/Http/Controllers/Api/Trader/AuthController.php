@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\Trader;
 
+use App\Traits\GeneralTrait;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Trader;
@@ -9,6 +10,7 @@ use Validator;
 
 class AuthController extends Controller
 {
+    use GeneralTrait;
     /**
      * Create a new AuthController instance.
      *
@@ -28,10 +30,12 @@ class AuthController extends Controller
             'password' => 'required|string|min:6',
         ]);
         if ($validator->fails()) {
-            return response()->json($validator->errors(), 422);
+          
+          return $this->returnError(422,$validator->errors());
         }
         if (! $token = auth($guard='api-trader')->attempt($validator->validated())) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+          
+          return $this->returnError(401,'Unauthorized');
         }
         return $this->createNewToken($token);
     }
@@ -49,16 +53,15 @@ class AuthController extends Controller
             'password' => 'required|string|confirmed|min:6',
         ]);
         if($validator->fails()){
-            return response()->json($validator->errors()->toJson(), 400);
+       
+          return $this->returnError(400,$validator->errors()->toJson());
         }
         $trader = Trader::create(array_merge(
                     $validator->validated(),
                     ['password' => bcrypt($request->password)]
                 ));
-        return response()->json([
-            'message' => 'User successfully registered',
-            'trader' => $trader
-        ], 201);
+      
+     return $this->returnData('trader', $trader , "trader successfully registered");
     }
 
     /**
@@ -68,7 +71,8 @@ class AuthController extends Controller
      */
     public function logout() {
         auth($guard='api-trader')->logout();
-        return response()->json(['message' => 'User successfully signed out']);
+      
+        return $this->returnSuccessMessage( "trader successfully signed out",  "200");
     }
     /**
      * Refresh a token.
@@ -84,7 +88,8 @@ class AuthController extends Controller
      * @return \Illuminate\Http\JsonResponse
      */
     public function userProfile() {
-        return response()->json(auth($guard='api-trader')->user());
+       
+        return $this->returnData('trader',auth($guard='api-trader')->user(), "trader successfully registered");
     }
     /**
      * Get the token array structure.
@@ -94,11 +99,12 @@ class AuthController extends Controller
      * @return \Illuminate\Http\JsonResponse
      */
     protected function createNewToken($token){
-        return response()->json([
+      
+        return   $this->returnData('trader_token',[
             'access_token' => $token,
             'token_type' => 'bearer',
             'expires_in' => auth($guard='api-trader')->factory()->getTTL() * 60,
             'trader' => auth($guard='api-trader')->user()
-        ]);
+        ], "User successfully registered");
     }
 }

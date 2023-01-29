@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('products', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->boolean('active')->default(false);
+            $table->boolean('active')->default(true);
             $table->integer('price');
             $table->unsignedBigInteger('trader_id');
             $table->unsignedBigInteger('catoger_id');
