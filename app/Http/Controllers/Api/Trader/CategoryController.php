@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Api\Trader;
 
 use App\Traits\GeneralTrait;
 use App\Http\Controllers\Controller;
-use app\model\Category;
+use app\Models\Category;
 use Illuminate\Http\Request;
 
 class CategoryController extends Controller

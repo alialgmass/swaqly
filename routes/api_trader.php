@@ -11,7 +11,7 @@ Route::group([
     Route::post('/register', [AuthController::class, 'register']);
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::post('/refresh', [AuthController::class, 'refresh']);
-    Route::get('/trader-profile', [AuthController::class, 'traderProfile']);
+    Route::post('/trader-profile', [AuthController::class, 'traderProfile']);
 });
 ##########product###########
 Route::group([
@@ -33,9 +33,9 @@ Route::group(['middleware' => ['AssignGuard:api-trader', 'api','CheckPassword'],
 ],function(){
     Route::post('/store', [CategoryController::class, 'store']);
     Route::post('/', [CategoryController::class, 'index']);
-    Route::get('/{id}', [CategoryController::class, 'show']);
+    Route::post('/{id}', [CategoryController::class, 'show']);
     Route::post('/update/{id}', [CategoryController::class, 'update']);
     Route::post('destroy/{id}', [CategoryController::class, 'destroy']);
-    Route::get('search', [CategoryController::class, 'search']);
+    Route::post('search', [CategoryController::class, 'search']);
 
 });

@@ -1,25 +1,20 @@
 <?php
 
-namespace App\Http\Controllers\Api\Trader;
+namespace App\Traits;
 
 use App\Traits\GeneralTrait;
-use App\Traits\AuthTrait;
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\Models\Trader;
 use Validator;
 
-class AuthController extends Controller
+trait AuthTrait
 {
     use GeneralTrait;
-
-   
-    public function __construct() {
-        $this->middleware('AssignGuard:api-trader', ['except' => ['login', 'register']]);
-      
-    }
-   
-    public function login(Request $request){
+  
+    /**
+     * Get a JWT via given credentials.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function Login( $request,$gurdgest){
     	$validator = Validator::make($request->all(), [
             'email' => 'required|email',
             'password' => 'required|string|min:6',
@@ -28,21 +23,21 @@ class AuthController extends Controller
           
           return $this->returnError(422,$validator->errors());
         }
-        if (! $token = auth($guard='api-trader')->attempt($validator->validated())) {
+        if (! $token = auth($guard=$gurdgest)->attempt($validator->validated())) {
           
           return $this->returnError(401,'Unauthorized');
         }
-        return $this->createNewToken($token);
+        return $this->createNewToken($token,$gurdgest);
     }
     /**
      * Register a User.
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function register(Request $request) {
+    public function register( $request ,$tableName,$model) {
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|between:2,100',
-            'email' => 'required|string|email|max:100|unique:traders',
+            'email' => 'required|string|email|max:100|unique:'.$tableName,
             'phoneNumber' => 'required',
             'Adress'=>'required',
             'password' => 'required|string|confirmed|min:6',
@@ -51,12 +46,12 @@ class AuthController extends Controller
        
           return $this->returnError(400,$validator->errors()->toJson());
         }
-        $trader = Trader::create(array_merge(
+        $data = $model::create(array_merge(
                     $validator->validated(),
                     ['password' => bcrypt($request->password)]
                 ));
       
-     return $this->returnData('trader', $trader , "trader successfully registered");
+     return $this->returnData('data', $data , " successfully registered");
     }
 
     /**
@@ -64,27 +59,27 @@ class AuthController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function logout() {
-        auth($guard='api-trader')->logout();
+    public function logout($gurdgest) {
+        auth($guard=$gurdgest)->logout();
       
-        return $this->returnSuccessMessage( "trader successfully signed out",  "200");
+        return $this->returnSuccessMessage( " successfully signed out",  "200");
     }
     /**
      * Refresh a token.
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function refresh() {
-        return $this->createNewToken(auth($guard='api-trader')->refresh());
+    public function refresh($gurdgest) {
+        return $this->createNewToken(auth($guard=$gurdgest)->refresh());
     }
     /**
      * Get the authenticated User.
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function traderProfile() {
+    public function userProfile($gurdgest) {
        
-        return $this->returnData('trader',auth($guard='api-trader')->user(), "trader successfully registered");
+        return $this->returnData('data',auth($guard=$gurdgest)->user());
     }
     /**
      * Get the token array structure.
@@ -93,13 +88,13 @@ class AuthController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    protected function createNewToken($token){
+    protected function createNewToken($token,$gurdgest){
       
         return   $this->returnData('trader_token',[
             'access_token' => $token,
             'token_type' => 'bearer',
-            'expires_in' => auth($guard='api-trader')->factory()->getTTL() * 60,
-            'trader' => auth($guard='api-trader')->user()
+            'expires_in' => auth($guard=$gurdgest)->factory()->getTTL() * 60,
+            'trader' => auth($guard=$gurdgest)->user()
         ], "User successfully registered");
     }
 }

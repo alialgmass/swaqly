@@ -56,7 +56,7 @@ class ProductController extends Controller
     {
         //
         try {
-            $product = Product::find($id)->with('category')->get();
+            $product = Product::find($id);
 
             return  $this-> returnData('products',$product);
         } catch (\Throwable$th) {
