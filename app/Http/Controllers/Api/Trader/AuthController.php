@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api\Trader;
 
 use App\Traits\GeneralTrait;
-use App\Traits\AuthTrait;
+
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Trader;
@@ -100,6 +100,6 @@ class AuthController extends Controller
             'token_type' => 'bearer',
             'expires_in' => auth($guard='api-trader')->factory()->getTTL() * 60,
             'trader' => auth($guard='api-trader')->user()
-        ], "User successfully registered");
+        ], "Trader successfully registered");
     }
 }

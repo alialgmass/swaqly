@@ -3,12 +3,15 @@
 namespace App\Http\Controllers\Api\User;
 
 use App\Http\Controllers\Controller;
+use App\Traits\GeneralTrait;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Validator;
 
 class AuthController extends Controller
 {
+    use GeneralTrait;
+
     /**
      * Create a new AuthController instance.
      *
@@ -28,10 +31,10 @@ class AuthController extends Controller
             'password' => 'required|string|min:6',
         ]);
         if ($validator->fails()) {
-            return response()->json($validator->errors(), 422);
+            return $this->returnError(422,$validator->errors());
         }
         if (! $token = auth($guard='api-user')->attempt($validator->validated())) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            return $this->returnError(401,'Unauthorized');
         }
         return $this->createNewToken($token);
     }
@@ -48,16 +51,13 @@ class AuthController extends Controller
             'password' => 'required|string|confirmed|min:6',
         ]);
         if($validator->fails()){
-            return response()->json($validator->errors()->toJson(), 400);
+            return $this->returnError(400,$validator->errors()->toJson());
         }
         $user = User::create(array_merge(
                     $validator->validated(),
                     ['password' => bcrypt($request->password)]
                 ));
-        return response()->json([
-            'message' => 'User successfully registered',
-            'user' => $user
-        ], 201);
+                return $this->returnData('user', $user , "user successfully registered");
     }
 
     /**
@@ -67,7 +67,7 @@ class AuthController extends Controller
      */
     public function logout() {
         auth()->logout();
-        return response()->json(['message' => 'User successfully signed out']);
+        return $this->returnSuccessMessage( "user successfully signed out",  "200");
     }
     /**
      * Refresh a token.
@@ -83,7 +83,7 @@ class AuthController extends Controller
      * @return \Illuminate\Http\JsonResponse
      */
     public function userProfile() {
-        return response()->json(auth()->user());
+        return $this->returnData('user',auth($guard='api-user')->user());
     }
     /**
      * Get the token array structure.
@@ -93,11 +93,11 @@ class AuthController extends Controller
      * @return \Illuminate\Http\JsonResponse
      */
     protected function createNewToken($token){
-        return response()->json([
+        return   $this->returnData('user_token',[
             'access_token' => $token,
             'token_type' => 'bearer',
-            'expires_in' => auth()->factory()->getTTL() * 60,
-            'user' => auth()->user()
-        ]);
+            'expires_in' => auth($guard='api-user')->factory()->getTTL() * 60,
+            'trader' => auth($guard='api-user')->user()
+        ], "User successfully registered");
     }
 }

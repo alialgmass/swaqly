@@ -1,6 +1,6 @@
 <?php
 use App\Http\Controllers\Api\User\AuthController;
-use App\Http\Controllers\Api\User\SearchController;
+use App\Http\Controllers\Api\User\RequestController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -30,6 +30,6 @@ Route::group([
     'middleware' => ['AssignGuard:api-trader', 'api','CheckPassword']
     
     ], function ($router) {
-        Route::post('/product', [SearchController::class, 'indexproduct']);
-        Route::post('/category', [SearchController::class, 'indexcategory']);
+        Route::post('/product', [RequestController::class, 'indexproduct']);
+        Route::post('/category', [RequestController::class, 'indexcategory']);
     });

@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\Api\User;
+
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ProductRequest;
 use App\Models\Product;
