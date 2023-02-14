@@ -27,7 +27,7 @@ Route::group([
 
 ##########product###########
 Route::group([
-    'middleware' => ['AssignGuard:api-trader', 'api','CheckPassword']
+    'middleware' => ['AssignGuard:api-user', 'api','CheckPassword']
     
     ], function ($router) {
         Route::post('/product', [RequestController::class, 'indexproduct']);

@@ -18,7 +18,7 @@ class AuthController extends Controller
      * @return void
      */
     public function __construct() {
-        $this->middleware('AssignGuard:api-trader', ['except' => ['login', 'register']]);
+        $this->middleware('AssignGuard:api-user', ['except' => ['login', 'register']]);
     }
     /**
      * Get a JWT via given credentials.
@@ -28,7 +28,7 @@ class AuthController extends Controller
     public function login(Request $request){
     	$validator = Validator::make($request->all(), [
             'email' => 'required|email',
-            'password' => 'required|string|min:6',
+            'password' => 'required|string|min:8',
         ]);
         if ($validator->fails()) {
             return $this->returnError(422,$validator->errors());
@@ -95,9 +95,8 @@ class AuthController extends Controller
     protected function createNewToken($token){
         return   $this->returnData('user_token',[
             'access_token' => $token,
-            'token_type' => 'bearer',
             'expires_in' => auth($guard='api-user')->factory()->getTTL() * 60,
-            'trader' => auth($guard='api-user')->user()
-        ], "User successfully login");
+            'user' => auth($guard='api-user')->user()
+        ], "successfully");
     }
 }
