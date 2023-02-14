@@ -18,8 +18,13 @@ class RequestController extends Controller
        
     
         try {
-            //code...
-            $product = Product::with('category')->get();
+            
+            $product = Product::select('name')->get()->toArray();
+            $data=[];
+            foreach($product as $d) {
+              \array_push($data,$d['name']);
+            }
+            $product=array_unique($data);
             return  $this-> returnData('products',$product);
         } catch (\Throwable $th) {
              return  $this-> returnError(400, $th);
@@ -33,8 +38,8 @@ class RequestController extends Controller
     
         try {
             //code...
-            $data = Category::with('product')->get();
-       
+            $data = Category::all();
+     
             return $this->returnData('Categories',$data);
         } catch (\Throwable $th) {
              return  $this-> returnError(400, $th);

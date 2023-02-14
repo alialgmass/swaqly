@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Api\Trader;
 
 use App\Traits\GeneralTrait;
-
 use App\Http\Controllers\Controller;
+use App\classes\Trader as TraderClass;
 use Illuminate\Http\Request;
 use App\Models\Trader;
 use Validator;
@@ -15,7 +15,7 @@ class AuthController extends Controller
 
    
     public function __construct() {
-        $this->middleware('AssignGuard:api-trader', ['except' => ['login', 'register']]);
+       $this->middleware('AssignGuard:api-trader', ['except' => ['login', 'register']]);
       
     }
    

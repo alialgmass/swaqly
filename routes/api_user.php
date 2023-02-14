@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Route;
  */
 ####################### user routs##########################
 Route::group([
-    'middleware' => 'api',
+    'middleware' => ['api','CheckPassword'],
     
 ], function ($router) {
     Route::post('/login', [AuthController::class, 'login']);

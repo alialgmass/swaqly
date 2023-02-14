@@ -18,7 +18,7 @@ class AuthController extends Controller
      * @return void
      */
     public function __construct() {
-        $this->middleware('auth:api-user', ['except' => ['login', 'register']]);
+        $this->middleware('AssignGuard:api-trader', ['except' => ['login', 'register']]);
     }
     /**
      * Get a JWT via given credentials.
@@ -98,6 +98,6 @@ class AuthController extends Controller
             'token_type' => 'bearer',
             'expires_in' => auth($guard='api-user')->factory()->getTTL() * 60,
             'trader' => auth($guard='api-user')->user()
-        ], "User successfully registered");
+        ], "User successfully login");
     }
 }
