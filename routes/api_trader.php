@@ -1,6 +1,7 @@
 <?php
 use App\Http\Controllers\Api\Trader\AuthController;
 use App\Http\Controllers\Api\Trader\ProductController;
+use App\Http\Controllers\Api\Trader\StoreController;
 use Illuminate\Support\Facades\Route;
 ####################### trader routs##########################
 Route::group([
@@ -29,7 +30,7 @@ Route::group([
 ###################category########################
 Route::group(['middleware' => ['AssignGuard:api-trader', 'api','CheckPassword'],
 'prefix'=>'category',
-'namespace'=>'App\Http\Controllers\Api\Trader'
+
 ],function(){
     Route::post('/store', [CategoryController::class, 'store']);
     Route::post('/', [CategoryController::class, 'index']);
@@ -37,5 +38,19 @@ Route::group(['middleware' => ['AssignGuard:api-trader', 'api','CheckPassword'],
     Route::post('/update/{id}', [CategoryController::class, 'update']);
     Route::post('destroy/{id}', [CategoryController::class, 'destroy']);
     Route::post('search', [CategoryController::class, 'search']);
+
+});
+
+################### store ########################
+Route::group(['middleware' => ['AssignGuard:api-trader', 'api','CheckPassword'],
+'prefix'=>'store',
+
+],function(){
+    Route::post('/store', [StoreController::class, 'store']);
+    Route::post('/', [StoreController::class, 'index']);
+    Route::post('/{id}', [StoreController::class, 'show']);
+    Route::post('/update/{id}', [StoreController::class, 'update']);
+    Route::post('destroy/{id}', [StoreController::class, 'destroy']);
+  
 
 });

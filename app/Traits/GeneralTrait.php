@@ -29,7 +29,7 @@ trait GeneralTrait
         ];
     }
 
-    public function returnData($key, $value, $msg = " ")
+    public function returnData($key, $value, $msg = "success")
     {
         return response()->json([
             'status' => true,
