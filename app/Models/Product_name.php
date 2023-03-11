@@ -2,18 +2,15 @@
 
 namespace App\Models;
 
-use App\Models\Category;
-use App\Models\Trader;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Product extends Model
+class Product_name extends Model
 {
     use HasFactory;
     protected $fillable = [
         'name',
-        'price',
-        'trader_id',
+       
         'catoger_id'
        
     ];
@@ -21,9 +18,4 @@ class Product extends Model
     {
         return $this->belongsTo(Category::class, 'catoger_id', 'id');
     }
-    public function trader()
-    {
-        return $this->belongsTo(Trader::class, 'trader_id', 'id');
-    }
-    
 }

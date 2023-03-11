@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Api\User;
 
-use App\Models\Product;
+use App\Models\Product_name;
 use App\Models\Category;
 use App\Traits\GeneralTrait;
 use App\Http\Controllers\Controller;
@@ -19,13 +19,8 @@ class RequestController extends Controller
     
         try {
             
-            $product = Product::select('name')->get()->toArray();
-            $data=[];
-            foreach($product as $d) {
-              \array_push($data,$d['name']);
-            }
-            $product=array_unique($data);
-            return  $this-> returnData('products',$product);
+           $data=Product_name::with('category')->get();
+            return  $this-> returnData('products',$data);
         } catch (\Throwable $th) {
              return  $this-> returnError(400, $th);
         }
@@ -38,7 +33,7 @@ class RequestController extends Controller
     
         try {
             //code...
-            $data = Category::all();
+            $data = Category::with('productname')->get();
      
             return $this->returnData('Categories',$data);
         } catch (\Throwable $th) {

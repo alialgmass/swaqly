@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\Trader;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ProductRequest;
 use App\Models\Product;
+use App\Models\Product_name;
 use App\Traits\GeneralTrait;
 
 class ProductController extends Controller
@@ -34,11 +35,12 @@ class ProductController extends Controller
     {
         //
         try {
+            
             $product = Product::create(array_merge(
                 $request->all(),
 
             ));
-          
+            add_to_names($request->name,$request->catoger_id);
             return  $this-> returnSuccessMessage( "Product successfully aded",  "201");
         } catch (\Throwable$th) {
              return  $this-> returnError(400, $th);
@@ -106,5 +108,11 @@ class ProductController extends Controller
              return  $this-> returnError(400, $th);
         }
 
+    }
+    function add_to_names($name ,$catoger_id){
+$data=Product_names::firstOrCreate([
+    'name' => $name ,
+    'catoger_id'=>$catoger_id
+]);
     }
 }
