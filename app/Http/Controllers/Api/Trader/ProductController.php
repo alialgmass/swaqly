@@ -40,7 +40,7 @@ class ProductController extends Controller
                 $request->all(),
 
             ));
-            add_to_names($request->name,$request->catoger_id);
+           // add_to_names($request->name,$request->catoger_id);
             return  $this-> returnSuccessMessage( "Product successfully aded",  "201");
         } catch (\Throwable$th) {
              return  $this-> returnError(400, $th);

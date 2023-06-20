@@ -5,6 +5,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
+use App\models\Product;
 
 class Trader extends Authenticatable implements JWTSubject
 {
@@ -18,7 +19,8 @@ class Trader extends Authenticatable implements JWTSubject
         'name',
         'email',
         'phoneNumber',
-        'Adress',
+        'lat',
+        'lang',
         'password',
     ];
     /**
@@ -55,4 +57,8 @@ class Trader extends Authenticatable implements JWTSubject
     public function getJWTCustomClaims() {
         return [];
     }    
+    public function product()
+    {
+        return $this->hasMany(Product::class,'trader_id', 'id');
+    }
 }

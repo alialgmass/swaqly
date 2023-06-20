@@ -3,41 +3,70 @@
 namespace App\Http\Controllers\Api\User;
 
 use App\Http\Controllers\Controller;
-
+use Illuminate\Http\Request;
 use App\Models\Product;
+use App\Models\Trader;
 use App\Models\Category;
 use App\Traits\GeneralTrait;
+use Illuminate\Contracts\Database\Eloquent\Builder;
+use DB;
 
 class SearchController extends Controller
 {
-//this will get it from front and mobile
-   //user $latitude, $longitude in request
-  // trader $latitude, $longitude in Db
+  use GeneralTrait;
 
-  //##########################################
-  //user $latitude, $longitude
-  //earea i will search on it 
-  // number of trader 
-  // products id
-   public function search(Request $request){
+  public function search(Request $request)
+  {
+    $names = explode(',', $request->input('names'));
+    $userLng = $request->lang;
+    $userLat = $request->lat;
+    $radius = $request->distance;
 
-   }
-   
-   function haversineDistance($latitude1, $longitude1, $latitude2, $longitude2, $unit = 'km') {
-      $theta = $longitude1 - $longitude2;
-      $distance = sin(deg2rad($latitude1)) * sin(deg2rad($latitude2)) +
-                  cos(deg2rad($latitude1)) * cos(deg2rad($latitude2)) * cos(deg2rad($theta));
-      $distance = acos($distance);
-      $distance = rad2deg($distance);
-      //to convert the distance from radians to miles, you would multiply the distance by 1.1515
-      $distance = $distance * 60 * 1.1515;
-      if ($unit == 'km') {
-          //to convert distance from miles to kilometers, you would multiply the distance by 1.609344
-          $distance = $distance * 1.609344;
+
+
+    $traders = Trader::select('id', DB::raw("( 3959 * acos( cos( radians($userLat) ) * cos( radians( lat ) ) * cos( radians( lang ) - radians($userLng) ) + sin( radians($userLat) ) * sin( radians( lat ) ) ) ) AS distance"))
+      ->having('distance', '<', $radius)
+      ->orderBy('distance')
+      ->with(
+        'product',
+      
+      )->get();
+
+    $products = [];
+    $prod = [];
+    foreach ($traders as $trader) {
+      if (isset($trader->product)) {
+        foreach ($trader->product as $p) {
+          if(in_array($p->name,$names)){
+           //  array_push($products, ["name" => $p->name, "price" => $p->price, "trader_id" => $trader->id, 'trader_dictance' => $trader->distance]);
+           if (array_key_exists($p->name, $prod))
+           {
+            array_push($prod[$p->name], ["price" => $p->price,
+            "trader_id" => $trader->id, 
+            'trader_dictance' => $trader->distance]);
+           }
+           else
+           {
+            $prod[$p->name]=[
+             
+            ["price" => $p->price,
+             "trader_id" => $trader->id, 
+             'trader_dictance' => $trader->distance]];
+           }
+          
+         
+        }
       }
-      return $distance;
-  }
-    
-   
 
+    }
+
+    return $this->returnData('products', $prod);
+  }
+
+
+
+
+
+
+}
 }
