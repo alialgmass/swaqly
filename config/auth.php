@@ -38,7 +38,7 @@ return [
     'guards' => [
         'web' => [
             'driver' => 'session',
-            'provider' => 'users',
+            'provider' => 'traders',
         ],
         'api' => [
             'driver' => 'jwt',
@@ -85,7 +85,7 @@ return [
             'driver' => 'eloquent',
             'model' => App\Models\Trader::class,
         ],
-      
+       
         // 'users' => [
         //     'driver' => 'database',
         //     'table' => 'users',
