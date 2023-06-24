@@ -71,6 +71,6 @@ $total+=$min;
 
 
 
-        return $this->returnData('products',$prod);
+        return $this->returnData('products', [$min_price,'total'=>$total]);
     }
 }
